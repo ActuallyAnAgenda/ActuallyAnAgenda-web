@@ -39,11 +39,12 @@ export default function Profile() {
         const name = events[key].name;
         const description = events[key].description;
         const start = new Date(events[key].start).toString();
-        const end = new Date(events[key].due).toString();
-        console.log(new Date(events[key].start))
+        const end = new Date(events[key].end).toString();
         return (<TrayItem key={id} id={id} name={name} description={description} path={'/create/event/'} timeline={`Starts at: ${start}, Ends at ${end}`}/>)
     })}</div>: <p>You have no events added!</p>;
+
     const hasEvents = Object.keys(projects).length > 0 || Object.keys(events).length > 0;
+
     const button = hasEvents? (<button onClick={(evt) => {
         evt.preventDefault();
         generateSchedule(auth.authUser.uid, auth.userData.projects, auth.userData.events).then(() => {
