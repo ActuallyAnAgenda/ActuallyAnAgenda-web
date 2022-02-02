@@ -32,6 +32,8 @@ class EventForm extends React.Component {
             }
         }
 
+        // TODO: round dates up to nearest 15 minutes
+
         action({
             name: this.state.name,
             description: this.state.description,
@@ -102,6 +104,8 @@ class EventForm extends React.Component {
                 document.getElementById(id).value = v;
                 this.setState({[id]: v});
             }
+            this.setState({inputType1: "datetime-local"});
+            this.setState({inputType2: "datetime-local"});
         } else {
             this.setState({message: "Create Event!"});
         }

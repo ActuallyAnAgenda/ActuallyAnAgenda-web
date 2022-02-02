@@ -1,3 +1,3 @@
-export function generateSchedule(uid, projects, events) {
+export async function generateSchedule(uid, projects, events) {
 
 }

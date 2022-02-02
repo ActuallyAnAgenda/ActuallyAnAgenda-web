@@ -6,8 +6,6 @@ import TrayItem from "../../utils/components/trayItem";
 import {deleteProject} from "../../utils/taskHandler";
 import {generateSchedule} from "../../utils/schedule/main";
 
-
-
 export default function Profile() {
     const auth = useFirebaseAuth();
     const [error, setError] = useState(null);
@@ -26,24 +24,33 @@ export default function Profile() {
 
 
     const projects = auth.userData.projects;
-    const projectList = Object.keys(projects).map((key, index) => {
+    const projectList = Object.keys(projects).length > 0? <div className={"main-task-menu vertical-menu"}>{Object.keys(projects).map((key, index) => {
         const id = key;
         const name = projects[key].name;
         const description = projects[key].description;
-        const due = projects[key].due;
+        const due = new Date(projects[key].due).toString();
         const minutes = projects[key].minutes;
         return (<TrayItem key={id} id={id} name={name} description={description} path={'/create/project/'} timeline={`Due Date: ${due}, Minutes Required: ${minutes}`}/>)
-    });
+    })}</div>: <p>You have no projects added!</p>;
 
     const events = auth.userData.events;
-    const eventList = Object.keys(events).map((key, index) => {
+    const eventList = Object.keys(events).length > 0? <div className={"main-task-menu vertical-menu"}>{Object.keys(events).map((key, index) => {
         const id = key;
         const name = events[key].name;
         const description = events[key].description;
-        const start = events[key].start;
-        const end = events[key].end;
+        const start = new Date(events[key].start).toString();
+        const end = new Date(events[key].due).toString();
+        console.log(new Date(events[key].start))
         return (<TrayItem key={id} id={id} name={name} description={description} path={'/create/event/'} timeline={`Starts at: ${start}, Ends at ${end}`}/>)
-    });
+    })}</div>: <p>You have no events added!</p>;
+    const hasEvents = Object.keys(projects).length > 0 || Object.keys(events).length > 0;
+    const button = hasEvents? (<button onClick={(evt) => {
+        evt.preventDefault();
+        generateSchedule(auth.authUser.uid, auth.userData.projects, auth.userData.events).then(() => {
+            window.location.replace("/")
+        })
+    }}className={'button'}>Generate Schedule!</button>): <></>;
+
     return (
         <div className={'fullscreen'}>
             <title>Home</title>
@@ -51,20 +58,11 @@ export default function Profile() {
             <div className={'content'}>
                 <Title name={`${auth.userData.username}'s Projects`}/>
                 <Divider/>
-                <div className={"main-task-menu vertical-menu"}>
-                    {projectList}
-                </div>
+                {projectList}
                 <Title name={`${auth.userData.username}'s Events`}/>
                 <Divider/>
-                <div className={"main-task-menu vertical-menu"}>
-                    {eventList}
-                </div>
-                <button onClick={(evt) => {
-                    evt.preventDefault();
-                    generateSchedule(auth.authUser.uid, auth.userData.projects, auth.userData.events).then(() => {
-                        window.location.replace("/")
-                    })
-                }}className={'button'}>Generate Schedule!</button>
+                {eventList}
+                {button}
                 {errorMessage}
             </div>
         </div>

@@ -49,8 +49,6 @@ class ProjectForm extends React.Component {
     }
 
     onBlur(event) {
-        // console.log(event.target.value);
-        // console.log(event.target.value === "")
         const blank = event.target.value === "" && !event.target.validity.badInput;
         if (blank) {
             this.setState({inputType: "text"});
@@ -94,6 +92,7 @@ class ProjectForm extends React.Component {
                 document.getElementById(id).value = v;
                 this.setState({[id]: v});
             }
+            this.setState({inputType: "datetime-local"});
         } else {
             this.setState({message: "Create Project!"});
         }
