@@ -187,7 +187,7 @@ function partitionDynamicTasks(optimalK, dynamicTasks, staticTasks, recurringTas
     //  universal array that checks for if any given interval is unavailable for partitioning due to recurring events.
     for (let i = 0; i < recurringTasks.length; i++) {
         let start = epochToIntervalTime(recurringTasks[i].startTime);
-        let dur = epochToIntervalTime(recurringTasks[i].duration);
+        let dur = epochToIntervalTime(recurringTasks[i].duration + CONVERSION_FACTOR - 1);
         for (let j = start; j < start + dur; j++) {
             //  If the event "overflows" to the next day, must use modulo
             inRecurringInterval[j % inRecurringInterval.length] = true;
@@ -195,7 +195,7 @@ function partitionDynamicTasks(optimalK, dynamicTasks, staticTasks, recurringTas
     }
     for (let i = 0; i < staticTasks.length; i++) {
         let start = epochToIntervalTime(staticTasks[i].start);
-        let end = epochToIntervalTime(staticTasks[i].end);
+        let end = epochToIntervalTime(staticTasks[i].end + CONVERSION_FACTOR - 1);
         for (let j = Math.max(HARD_START_TIME, start); j < Math.min(HARD_END_TIME, end); j++) {
             isAvailable[convertAbsoluteToScheduleTime(j, HARD_START_TIME)] = false;
         }
