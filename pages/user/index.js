@@ -22,13 +22,12 @@ export default function Profile() {
         errorMessage = <Error error={error}/>;
     }
 
-
     const projects = auth.userData.projects;
     const projectList = Object.keys(projects).length > 0? <div className={"main-task-menu vertical-menu"}>{Object.keys(projects).map((key, index) => {
         const id = key;
         const name = projects[key].name;
         const description = projects[key].description;
-        const due = new Date(projects[key].due).toString();
+        const due = new Date(projects[key].due).toLocaleString('en-US', { hour12: true });
         const minutes = projects[key].minutes;
         return (<TrayItem key={id} id={id} name={name} description={description} path={'/create/project/'} timeline={`Due Date: ${due}, Minutes Required: ${minutes}`}/>)
     })}</div>: <p>You have no projects added!</p>;
@@ -38,8 +37,8 @@ export default function Profile() {
         const id = key;
         const name = events[key].name;
         const description = events[key].description;
-        const start = new Date(events[key].start).toString();
-        const end = new Date(events[key].end).toString();
+        const start = new Date(events[key].start).toLocaleString('en-US', { hour12: true });
+        const end = new Date(events[key].end).toLocaleString('en-US', { hour12: true });
         return (<TrayItem key={id} id={id} name={name} description={description} path={'/create/event/'} timeline={`Starts at: ${start}, Ends at ${end}`}/>)
     })}</div>: <p>You have no events added!</p>;
 
@@ -47,8 +46,8 @@ export default function Profile() {
 
     const button = hasEvents? (<button onClick={(evt) => {
         evt.preventDefault();
-        generateSchedule(auth.authUser.uid, auth.userData.projects, auth.userData.events).then(() => {
-            window.location.replace("/")
+        generateSchedule(auth.authUser.uid, auth.userData.projects, auth.userData.events, setError).then(() => {
+            //window.location.replace("/")
         })
     }}className={'button'}>Generate Schedule!</button>): <></>;
 

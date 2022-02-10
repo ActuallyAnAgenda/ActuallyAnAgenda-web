@@ -34,7 +34,7 @@ class ProjectForm extends React.Component {
             name: this.state.name,
             description: this.state.description,
             minutes: this.state.minutes,
-            due: this.state.due
+            due: new Date(this.state.due).getTime()
         }).then(() => {
             console.log("Document successfully written!");
             window.location.replace("/user")
@@ -88,7 +88,11 @@ class ProjectForm extends React.Component {
             // Sets a default value
             this.setState({message: "Update Project!"});
             for (const id in this.props.prevState.value) {
-                const v = this.props.prevState.value[id];
+                let v = this.props.prevState.value[id];
+                if (id === 'due') {
+                    const d = new Date(v);
+                    v = (new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString()).slice(0, -1);
+                }
                 document.getElementById(id).value = v;
                 this.setState({[id]: v});
             }

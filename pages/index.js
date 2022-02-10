@@ -2,7 +2,11 @@ import useFirebaseAuth, {FINISHED} from "../utils/firebase/auth";
 import {Divider, Title} from "../utils/components/utils";
 import GlobalHeader from "../utils/components/header";
 import React from "react";
-import Calendar from 'react-calendar'
+import {Calendar, momentLocalizer} from 'react-big-calendar'
+import moment from 'moment';
+
+
+const localize = momentLocalizer(moment)
 
 export default function Home() {
     const auth = useFirebaseAuth();
@@ -12,8 +16,23 @@ export default function Home() {
         return null;
     }
     const msg = `Home`;
-    const hasSchedule = true; // to implement
-    const schedule = hasSchedule? <Calendar className={'react-calendar'}/> : <></>
+    const list = auth.userData.schedule;
+    const hasSchedule = list !== undefined; // to implement
+    const eventList = [];
+    for (let key in list) {
+        let x = list[key];
+        eventList.push({title: x.name, start: new Date(x.start), end: new Date(x.end)});
+    }
+    for (let key in auth.userData.events) {
+        let x = auth.userData.events[key];
+        eventList.push({title: x.name, start: new Date(x.start), end: new Date(x.end)});
+    }
+    const schedule = hasSchedule? <Calendar
+        localizer={localize}
+        events={eventList}
+        startAccessor="start"
+        endAccessor="end"
+    /> : <></>
     return (
         <div className={'fullscreen'}>
             <title>Home</title>

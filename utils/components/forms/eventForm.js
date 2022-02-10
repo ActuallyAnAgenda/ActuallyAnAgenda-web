@@ -37,8 +37,8 @@ class EventForm extends React.Component {
         action({
             name: this.state.name,
             description: this.state.description,
-            start: this.state.start,
-            end: this.state.end
+            start: new Date(this.state.start).getTime(),
+            end: new Date(this.state.end).getTime()
         }).then(() => {
             console.log("Document successfully written!");
             window.location.replace("/user")
@@ -100,7 +100,11 @@ class EventForm extends React.Component {
             // Sets a default value
             this.setState({message: "Update Event!"});
             for (const id in this.props.prevState.value) {
-                const v = this.props.prevState.value[id];
+                let v = this.props.prevState.value[id];
+                if (id === 'start' || id === 'end') {
+                    const d = new Date(v);
+                    v = (new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString()).slice(0, -1);
+                }
                 document.getElementById(id).value = v;
                 this.setState({[id]: v});
             }
