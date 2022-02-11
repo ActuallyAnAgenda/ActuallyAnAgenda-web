@@ -17,9 +17,7 @@ class TrayItem extends React.Component {
         // Can set default value like `value = "something"` for future task updates
         const description = this.props.description !== ""? <span className={"description"}>{this.props.description}</span>: <></>;
         const timeline = <span className={"description"}>{this.props.timeline}</span>;
-        const editButton = <button className={'button'} onClick={(evt) => {
-            window.location = this.props.path + this.props.id;
-        }}>Edit</button>;
+        const editButton = <button className={'button'} onClick={this.props.onClick}>Edit</button>;
         const expand = this.state.expanded? (
             <div className={'button dropdown-item'}>
                 {description}

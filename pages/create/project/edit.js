@@ -1,15 +1,12 @@
 import React, {useState} from "react";
-import { useRouter } from 'next/router'
 import useFirebaseAuth, {FINISHED} from "/utils/firebase/auth";
 import {Divider, Error, Title} from "/utils/components/utils";
 import GlobalHeader from "/utils/components/header";
-import EventForm from "../../../utils/components/forms/eventForm";
-import {deleteEvent, deleteProject, loadPrevState} from "../../../utils/taskHandler";
+import {deleteProject, loadPrevState} from "../../../utils/taskHandler";
+import ProjectForm from "../../../utils/components/forms/projectForm";
 
-export default function Event() {
+export default function Project() {
     const authState = useFirebaseAuth();
-    const router = useRouter()
-    const { slug } = router.query
 
     const [error, setError] = useState(null);
     if (authState.loading !== FINISHED) return null;
@@ -17,31 +14,33 @@ export default function Event() {
         window.location.href = "/login";
         return null;
     }
-    if (authState.userData.events[slug] == null) {
-        window.location.href = "/create/event";
+    const slug = window.sessionStorage.getItem('edit-project');
+    if (authState.userData.projects[slug] == null) {
+        window.location.href = "/create/project";
         return null;
     }
     let errorMessage = <></>;
     if (error != null) {
         errorMessage = <Error error={error}/>;
     }
-    const prevState = loadPrevState(slug, authState.userData.events[slug]);
+    const prevState = loadPrevState(slug, authState.userData.projects[slug]);
     return (
         <div className={'fullscreen'}>
-            <title>Edit Event</title>
+            <title>Edit Project</title>
             <GlobalHeader authInfo={authState}/>
             <div className={'content'}>
-                <Title name={"Edit Event"}/>
+                <Title name={"Edit Project"}/>
                 <Divider/>
-                <EventForm prevState={prevState} authInfo={authState} setError={setError}/>
+                <ProjectForm prevState={prevState} authInfo={authState} setError={setError}/>
                 <button onClick={(evt) => {
                     evt.preventDefault();
-                    deleteEvent(authState.authUser.uid, slug).then(() => {
+                    deleteProject(authState.authUser.uid, slug).then(() => {
                         window.location.replace("/user")
                     })
                 }}className={'button'}>Or... Remove Task</button>
                 {errorMessage}
             </div>
+
         </div>
     );
 

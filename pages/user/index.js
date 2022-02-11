@@ -22,6 +22,7 @@ export default function Profile() {
         errorMessage = <Error error={error}/>;
     }
 
+
     const projects = auth.userData.projects;
     const projectList = Object.keys(projects).length > 0? <div className={"main-task-menu vertical-menu"}>{Object.keys(projects).map((key, index) => {
         const id = key;
@@ -29,7 +30,10 @@ export default function Profile() {
         const description = projects[key].description;
         const due = new Date(projects[key].due).toLocaleString('en-US', { hour12: true });
         const minutes = projects[key].minutes;
-        return (<TrayItem key={id} id={id} name={name} description={description} path={'/create/project/'} timeline={`Due Date: ${due}, Minutes Required: ${minutes}`}/>)
+        return (<TrayItem key={id} id={id} name={name} description={description} path={'/create/project/'} onClick={(evt) => {
+            window.sessionStorage.setItem('edit-project', id);
+            window.location.replace("/create/project/edit");
+        }} timeline={`Due Date: ${due}, Minutes Required: ${minutes}`}/>)
     })}</div>: <p>You have no projects added!</p>;
 
     const events = auth.userData.events;
@@ -39,7 +43,10 @@ export default function Profile() {
         const description = events[key].description;
         const start = new Date(events[key].start).toLocaleString('en-US', { hour12: true });
         const end = new Date(events[key].end).toLocaleString('en-US', { hour12: true });
-        return (<TrayItem key={id} id={id} name={name} description={description} path={'/create/event/'} timeline={`Starts at: ${start}, Ends at ${end}`}/>)
+        return (<TrayItem key={id} id={id} name={name} description={description} path={'/create/event/'} onClick={(evt) => {
+            window.sessionStorage.setItem('edit-event', id);
+            window.location.replace("/create/event/edit");
+        }} timeline={`Starts at: ${start}, Ends at ${end}`}/>)
     })}</div>: <p>You have no events added!</p>;
 
     const hasEvents = Object.keys(projects).length > 0 || Object.keys(events).length > 0;
