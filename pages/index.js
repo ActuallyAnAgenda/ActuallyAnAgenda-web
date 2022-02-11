@@ -30,6 +30,11 @@ export default function Home() {
     const schedule = hasSchedule? <Calendar
         localizer={localize}
         events={eventList}
+        style={{
+            marginTop: '10px',
+            width: '100%',
+            height: '100vh',
+        }}
         startAccessor="start"
         endAccessor="end"
     /> : <></>
