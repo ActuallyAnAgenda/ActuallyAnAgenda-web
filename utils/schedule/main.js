@@ -224,14 +224,14 @@ function partitionDynamicTasks(optimalK, dynamicTasks, staticTasks, recurringTas
     let naivePartition = Array(cnt).fill(false);
     //  Next, Attempting to create the naive partition generation -> Shoving all tasks as far back as possible
     let currentTaskIdx = dynamicTasks.length - 1;
-    let sessionsRemaining = epochToIntervalTime(dynamicTasks[currentTaskIdx].duration);
+    let sessionsRemaining = epochToIntervalTime(dynamicTasks[currentTaskIdx].duration + CONVERSION_FACTOR - 1);
     for (let i = HARD_END_TIME - 1; i >= HARD_START_TIME; i--) {
         if (sessionsRemaining === 0) {
             currentTaskIdx--;
             if (currentTaskIdx < 0) {
                 break;
             }
-            sessionsRemaining = epochToIntervalTime(dynamicTasks[currentTaskIdx].duration);
+            sessionsRemaining = epochToIntervalTime(dynamicTasks[currentTaskIdx].duration + CONVERSION_FACTOR - 1);
         }
         if (!isAvailable[convertAbsoluteToScheduleTime(i, HARD_START_TIME)] || i >= epochToIntervalTime(dynamicTasks[currentTaskIdx].due)) {
             continue;
@@ -253,9 +253,9 @@ function partitionDynamicTasks(optimalK, dynamicTasks, staticTasks, recurringTas
     }
     let fixedPartition = binaryStringToBoolArray(calcMinCost(boolArrayToBinaryString(naivePartition), optimalK));
     let result = [];
-    //  Assigning optimal intervals to tasks using the previous method but in reverse
+    // Assigning optimal intervals to tasks using the previous method but in reverse
     currentTaskIdx = 0;
-    sessionsRemaining = epochToIntervalTime(dynamicTasks[currentTaskIdx].duration);
+    sessionsRemaining = epochToIntervalTime(dynamicTasks[currentTaskIdx].duration + CONVERSION_FACTOR - 1);
     for (let i = 0; i < fixedPartition.length; i++) {
         if (!fixedPartition[i]) {
             continue;
@@ -265,7 +265,7 @@ function partitionDynamicTasks(optimalK, dynamicTasks, staticTasks, recurringTas
             if (currentTaskIdx === dynamicTasks.length) {
                 break;
             }
-            sessionsRemaining = epochToIntervalTime(dynamicTasks[currentTaskIdx].duration);
+            sessionsRemaining = epochToIntervalTime(dynamicTasks[currentTaskIdx].duration + CONVERSION_FACTOR - 1);
         }
         let trueTime = intervalToEpochTime(originalIndex[i] + HARD_START_TIME);
         let ID = dynamicTasks[currentTaskIdx].ID;

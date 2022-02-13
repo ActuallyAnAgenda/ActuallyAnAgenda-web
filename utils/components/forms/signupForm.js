@@ -20,7 +20,6 @@ class SignupForm extends React.Component {
             const userDoc = db.collection("users").doc(user.user.uid);
             userDoc.set({
                 username: this.state.username,
-                currentMatchID: null
             }).then(() => {
                 console.log("Document successfully written!");
                 window.location.replace("/")
