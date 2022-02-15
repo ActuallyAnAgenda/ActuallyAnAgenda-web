@@ -10,6 +10,7 @@ export class Parabola {
         this.k = k;
         this.idx = idx;
     }
+
     cost(x) {
         return Math.pow(x - this.h, 2) + this.k;
     }

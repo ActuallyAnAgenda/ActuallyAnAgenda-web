@@ -2,7 +2,9 @@ import React, {useState} from "react";
 import useFirebaseAuth, {FINISHED} from "/utils/firebase/auth";
 import {Divider, Error, Title} from "/utils/components/utils";
 import GlobalHeader from "/utils/components/header";
-import EventForm from "../../../utils/components/forms/eventForm";
+import {db} from "../../../utils/firebase/firebase";
+import Form from "../../../utils/components/forms/form";
+import {eventForm} from "../../../utils/components/forms/formConstants";
 
 export default function Event() {
     const authState = useFirebaseAuth();
@@ -17,6 +19,23 @@ export default function Event() {
     if (error != null) {
         errorMessage = <Error error={error}/>;
     }
+    const onSubmit = (state, onFail) => {
+        db.collection("users")
+            .doc(authState.authUser.uid)
+            .collection("events")
+            .add({
+                name: state.name,
+                description: state.description,
+                start: new Date(state.start).getTime(),
+                end: new Date(state.end).getTime()
+            }).then(() => {
+            console.log("Document successfully written!");
+            window.location.replace("/user")
+        }).catch((error) => {
+            console.error("Error writing document: ", error);
+            onFail();
+        });
+    }
     return (
         <div className={'fullscreen'}>
             <title>New Project</title>
@@ -24,7 +43,7 @@ export default function Event() {
             <div className={'content'}>
                 <Title name={"New Event"}/>
                 <Divider/>
-                <EventForm authInfo={authState} setError={setError}/>
+                <Form inputs={eventForm} submit={onSubmit} message={"Create Event!"}/>
                 {errorMessage}
             </div>
         </div>

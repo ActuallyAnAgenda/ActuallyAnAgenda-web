@@ -149,8 +149,7 @@ function calcMinCost(S, K) {
     return boolArrayToBinaryString(ans);
 }
 
-function partitionDynamicTasks(optimalK, dynamicTasks, staticTasks, recurringTasks)
-{
+function partitionDynamicTasks(optimalK, dynamicTasks, staticTasks, recurringTasks) {
     if (dynamicTasks.length === 0) {
         return {
             result: [],

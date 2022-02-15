@@ -3,7 +3,9 @@ import useFirebaseAuth, {FINISHED} from "/utils/firebase/auth";
 import {Divider, Error, Title} from "/utils/components/utils";
 import GlobalHeader from "/utils/components/header";
 import {deleteProject, loadPrevState} from "../../../utils/taskHandler";
-import ProjectForm from "../../../utils/components/forms/projectForm";
+import {db} from "../../../utils/firebase/firebase";
+import Form from "../../../utils/components/forms/form";
+import {projectForm} from "../../../utils/components/forms/formConstants";
 
 export default function Project() {
     const authState = useFirebaseAuth();
@@ -24,6 +26,23 @@ export default function Project() {
         errorMessage = <Error error={error}/>;
     }
     const prevState = loadPrevState(slug, authState.userData.projects[slug]);
+    const onSubmit = (state, onFail) => {
+        db.collection("users")
+            .doc(authState.authUser.uid)
+            .collection("projects")
+            .doc(prevState.docID).set({
+            name: state.name,
+            description: state.description,
+            minutes: state.minutes,
+            due: new Date(state.due).getTime()
+        }).then(() => {
+            console.log("Document successfully written!");
+            window.location.replace("/user")
+        }).catch((error) => {
+            console.error("Error writing document: ", error);
+            onFail();
+        });
+    }
     return (
         <div className={'fullscreen'}>
             <title>Edit Project</title>
@@ -31,13 +50,14 @@ export default function Project() {
             <div className={'content'}>
                 <Title name={"Edit Project"}/>
                 <Divider/>
-                <ProjectForm prevState={prevState} authInfo={authState} setError={setError}/>
+                <Form inputs={projectForm} submit={onSubmit} message={"Edit Project!"} prevState={prevState}/>
                 <button onClick={(evt) => {
                     evt.preventDefault();
                     deleteProject(authState.authUser.uid, slug).then(() => {
                         window.location.replace("/user")
                     })
-                }}className={'button'}>Or... Remove Task</button>
+                }} className={'button'}>Or... Remove Task
+                </button>
                 {errorMessage}
             </div>
 

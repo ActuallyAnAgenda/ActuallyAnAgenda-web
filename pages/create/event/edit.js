@@ -2,8 +2,10 @@ import React, {useState} from "react";
 import useFirebaseAuth, {FINISHED} from "/utils/firebase/auth";
 import {Divider, Error, Title} from "/utils/components/utils";
 import GlobalHeader from "/utils/components/header";
-import EventForm from "../../../utils/components/forms/eventForm";
-import {deleteEvent, deleteProject, loadPrevState} from "../../../utils/taskHandler";
+import {deleteEvent, loadPrevState} from "../../../utils/taskHandler";
+import Form from "../../../utils/components/forms/form";
+import {db} from "../../../utils/firebase/firebase";
+import {eventForm} from "../../../utils/components/forms/formConstants";
 
 export default function Event() {
     const authState = useFirebaseAuth();
@@ -24,6 +26,23 @@ export default function Event() {
         errorMessage = <Error error={error}/>;
     }
     const prevState = loadPrevState(slug, authState.userData.events[slug]);
+    const onSubmit = (state, onFail) => {
+        db.collection("users")
+            .doc(authState.authUser.uid)
+            .collection("events")
+            .doc(prevState.docID).set({
+            name: state.name,
+            description: state.description,
+            start: new Date(state.start).getTime(),
+            end: new Date(state.end).getTime()
+        }).then(() => {
+            console.log("Document successfully written!");
+            window.location.replace("/user")
+        }).catch((error) => {
+            console.error("Error writing document: ", error);
+            onFail();
+        });
+    }
     return (
         <div className={'fullscreen'}>
             <title>Edit Event</title>
@@ -31,13 +50,14 @@ export default function Event() {
             <div className={'content'}>
                 <Title name={"Edit Event"}/>
                 <Divider/>
-                <EventForm prevState={prevState} authInfo={authState} setError={setError}/>
+                <Form inputs={eventForm} submit={onSubmit} message={"Edit Event!"} prevState={prevState}/>
                 <button onClick={(evt) => {
                     evt.preventDefault();
                     deleteEvent(authState.authUser.uid, slug).then(() => {
                         window.location.replace("/user")
                     })
-                }}className={'button'}>Or... Remove Task</button>
+                }} className={'button'}>Or... Remove Task
+                </button>
                 {errorMessage}
             </div>
         </div>

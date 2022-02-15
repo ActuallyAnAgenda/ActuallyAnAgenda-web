@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from "react";
-import ProjectForm from "./forms/projectForm";
+import React from "react";
+
 class TrayItem extends React.Component {
 
     constructor(props) {
@@ -15,16 +15,17 @@ class TrayItem extends React.Component {
 
     render() {
         // Can set default value like `value = "something"` for future task updates
-        const description = this.props.description !== ""? <span className={"description"}>{this.props.description}</span>: <></>;
+        const description = this.props.description !== "" ?
+            <span className={"description"}>{this.props.description}</span> : <></>;
         const timeline = <span className={"description"}>{this.props.timeline}</span>;
         const editButton = <button className={'button'} onClick={this.props.onClick}>Edit</button>;
-        const expand = this.state.expanded? (
+        const expand = this.state.expanded ? (
             <div className={'button dropdown-item'}>
                 {description}
                 {timeline}
                 {editButton}
             </div>
-        ): <></>;
+        ) : <></>;
         return (
             <>
                 <button className={'button'} onClick={this.onClick}>

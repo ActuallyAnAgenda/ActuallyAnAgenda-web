@@ -2,7 +2,9 @@ import React, {useState} from "react";
 import useFirebaseAuth, {FINISHED} from "/utils/firebase/auth";
 import {Divider, Error, Title} from "/utils/components/utils";
 import GlobalHeader from "/utils/components/header";
-import ProjectForm from "/utils/components/forms/projectForm";
+import Form from "../../../utils/components/forms/form";
+import {projectForm} from "../../../utils/components/forms/formConstants";
+import {db} from "../../../utils/firebase/firebase";
 
 export default function Project() {
 
@@ -17,6 +19,23 @@ export default function Project() {
     if (error != null) {
         errorMessage = <Error error={error}/>;
     }
+    const onSubmit = (state, onFail) => {
+        db.collection("users")
+            .doc(authState.authUser.uid)
+            .collection("projects")
+            .add({
+                name: state.name,
+                description: state.description,
+                minutes: state.minutes,
+                due: new Date(state.due).getTime()
+            }).then(() => {
+            console.log("Document successfully written!");
+            window.location.replace("/user")
+        }).catch((error) => {
+            console.error("Error writing document: ", error);
+            onFail();
+        });
+    }
     return (
         <div className={'fullscreen'}>
             <title>New Project</title>
@@ -24,7 +43,7 @@ export default function Project() {
             <div className={'content'}>
                 <Title name={"New Project"}/>
                 <Divider/>
-                <ProjectForm authInfo={authState} setError={setError}/>
+                <Form inputs={projectForm} submit={onSubmit} message={"New Project!"}/>
                 {errorMessage}
             </div>
         </div>

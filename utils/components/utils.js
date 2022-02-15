@@ -1,5 +1,4 @@
 import React from "react";
-import {auth} from "../firebase/firebase";
 
 export function ButtonContainer(props) {
     const buttons = props.buttons;

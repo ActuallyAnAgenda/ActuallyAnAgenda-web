@@ -22,7 +22,7 @@ export default function useFirebaseAuth() {
                 await userProjects.get().then((querySnapshot) => {
                     const tempDoc = {}
                     querySnapshot.forEach((doc) => {
-                        tempDoc[doc.id] = { ...doc.data() }
+                        tempDoc[doc.id] = {...doc.data()}
                     })
                     userData.projects = tempDoc;
                 })
@@ -30,7 +30,7 @@ export default function useFirebaseAuth() {
                 await userEvents.get().then((querySnapshot) => {
                     const tempDoc = {}
                     querySnapshot.forEach((doc) => {
-                        tempDoc[doc.id] = { ...doc.data() }
+                        tempDoc[doc.id] = {...doc.data()}
                     })
                     userData.events = tempDoc;
                 })

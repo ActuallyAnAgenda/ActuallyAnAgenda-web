@@ -1,6 +1,6 @@
 import {auth} from "../firebase/firebase";
 import React from "react";
-import logo from "/public/images/logo.png"
+
 export function HeaderDivider() {
     return <div className={'divider-vertical'}/>;
 }
@@ -20,7 +20,7 @@ export function GlobalHeader(props) {
     return (<div className={'header'}>
 
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <a className={'item'} href={'/'} style={{padding:0}}>
+        <a className={'item'} href={'/'} style={{padding: 0}}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={'/images/logo.png'}/>
         </a>

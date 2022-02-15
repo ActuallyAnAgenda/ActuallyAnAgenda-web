@@ -67,8 +67,8 @@ class SignupForm extends React.Component {
                     authStateChanged(user).then(() => unsubscribe());
                 });
             }).catch((error) => {
-                this.props.setError(error.message);
-                this.setState({submitted: false});
+            this.props.setError(error.message);
+            this.setState({submitted: false});
         })
     }
 
@@ -78,7 +78,8 @@ class SignupForm extends React.Component {
                 <form className={'form'} onSubmit={this.onSubmit}>
                     <input required className={'top-input-offset'} type="text" minLength={3}
                            maxLength={30}
-                           onChange={(evt) => this.setState({username: evt.target.value})} placeholder={"Display Name"}/>
+                           onChange={(evt) => this.setState({username: evt.target.value})}
+                           placeholder={"Display Name"}/>
                     <input required type="email"
                            onChange={(evt) => this.setState({email: evt.target.value})} placeholder={"Email"}/>
                     <input required type="password"
